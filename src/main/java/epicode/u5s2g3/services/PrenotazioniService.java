@@ -44,16 +44,20 @@ public class PrenotazioniService {
 	}
 
 	public Prenotazione create(PrenotazionePayload p) {
+		Postazione postazione = postazioniService.findById(p.getPostazioneId());
 
-		prenotazioniRepo.findByPostazioneAndDataPrenotata(p.getPostazioneId(), p.getDataPrenotata()).ifPresent(user -> {
+		prenotazioniRepo.findByPostazioneAndDataPrenotata(postazione, p.getDataPrenotata()).ifPresent(user -> {
 			throw new BadRequestException("Postazione " + p.getPostazioneId() + " già in uso!");
 		});
 
-		User user = usersService.findById(p.getPostazioneId());
-		Postazione postazione = postazioniService.findById(p.getPostazioneId());
+		LocalDate twoDaysAhead = LocalDate.now().plusDays(2);
+		User user = usersService.findById(p.getUserId());
+		if (p.getDataPrenotata().isAfter(twoDaysAhead)) {
+			Prenotazione newPrenotazione = new Prenotazione(user, postazione, p.getDataPrenotata(), LocalDate.now());
+			return prenotazioniRepo.save(newPrenotazione);
+		} else {
+			throw new BadRequestException("Devono esserci almeno due giorni prima della data di presentazione.");
+		}
 
-		Prenotazione newPrenotazione = new Prenotazione(user, postazione, p.getDataPrenotata(), LocalDate.now());
-
-		return prenotazioniRepo.save(newPrenotazione);
 	}
 }
