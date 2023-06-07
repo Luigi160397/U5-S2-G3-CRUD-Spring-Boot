@@ -60,4 +60,28 @@ public class PrenotazioniService {
 		}
 
 	}
+
+	public Prenotazione findByIdAndUpdate(UUID id, PrenotazionePayload p) throws NotFoundException {
+		Prenotazione found = this.findById(id);
+
+		Postazione postazione = postazioniService.findById(p.getPostazioneId());
+
+		LocalDate twoDaysAhead = LocalDate.now().plusDays(2);
+		User user = usersService.findById(p.getUserId());
+		if (p.getDataPrenotata().isAfter(twoDaysAhead)) {
+			found.setId(id);
+			found.setPostazione(postazione);
+			found.setUser(user);
+			found.setDataPrenotata(p.getDataPrenotata());
+			return prenotazioniRepo.save(found);
+		} else {
+			throw new BadRequestException("Devono esserci almeno due giorni prima della data di presentazione.");
+		}
+
+	}
+
+	public void findByIdAndDelete(UUID id) throws NotFoundException {
+		Prenotazione found = this.findById(id);
+		prenotazioniRepo.delete(found);
+	}
 }
