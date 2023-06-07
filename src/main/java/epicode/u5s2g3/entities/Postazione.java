@@ -8,17 +8,24 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 @Entity
+@Table(name = "postazioni")
 public class Postazione {
 
 	@Id
 	@GeneratedValue
 	private UUID id;
 
-	private String codice;
 	private String descrizione;
 	private Integer numeroMassimoOccupanti;
 
@@ -28,7 +35,16 @@ public class Postazione {
 	@ManyToOne
 	private Edificio edificio;
 
+	public Postazione(String descrizione, Integer numeroMassimoOccupanti, TipoPostazione tipo, Edificio edificio) {
+		super();
+		this.descrizione = descrizione;
+		this.numeroMassimoOccupanti = numeroMassimoOccupanti;
+		this.tipo = tipo;
+		this.edificio = edificio;
+	}
+
 //	@OneToMany(mappedBy = "postazione")
 //	@OrderBy(value = "dataPrenotata")
 //	private List<Prenotazione> listaPrenotazioni;
+
 }

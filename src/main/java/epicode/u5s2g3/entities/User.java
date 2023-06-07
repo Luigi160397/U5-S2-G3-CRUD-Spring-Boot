@@ -6,9 +6,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@NoArgsConstructor
+@ToString
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -22,5 +28,13 @@ public class User {
 	private Boolean active = true;
 
 	private String password;
+
+	public User(String username, String nome, String email, String password) {
+		super();
+		this.username = username;
+		this.nome = nome;
+		this.email = email;
+		this.password = password;
+	}
 
 }
